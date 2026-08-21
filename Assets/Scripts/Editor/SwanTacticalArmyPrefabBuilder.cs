@@ -19,13 +19,13 @@ public static class SwanTacticalArmyPrefabBuilder
     static readonly UnitDefinition[] k_Units =
     {
         new UnitDefinition("Tank", "Assets/GameData/Character/MonkeyArmy/MonkeyArmy_Tank.asset",
-            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Tank_Girl.prefab"),
+            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Tank_Girl.prefab", new Vector3(-2f, 0f, -2.5f)),
         new UnitDefinition("Archer", "Assets/GameData/Character/MonkeyArmy/MonkeyArmy_Archer.asset",
-            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Archer_Girl.prefab"),
+            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Archer_Girl.prefab", new Vector3(2f, 0f, -2.5f)),
         new UnitDefinition("Mage", "Assets/GameData/Character/MonkeyArmy/MonkeyArmy_Mage.asset",
-            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Mage_Girl.prefab"),
+            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Mage_Girl.prefab", new Vector3(-3f, 0f, -4.25f)),
         new UnitDefinition("Rogue", "Assets/GameData/Character/MonkeyArmy/MonkeyArmy_Rogue.asset",
-            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Rogue_Girl.prefab"),
+            "Assets/Prefabs/CharGFX/CharacterGraphics/PlayerGraphics_Rogue_Girl.prefab", new Vector3(3f, 0f, -4.25f)),
     };
 
     [MenuItem("Boss Room/Swan Tactical Army/Rebuild Swan Tactical Units")]
@@ -90,6 +90,16 @@ public static class SwanTacticalArmyPrefabBuilder
         {
             root.AddComponent<SwanTacticalUnit>();
         }
+
+        var follower = root.GetComponent<MonkeyArmyFollower>();
+        if (!follower)
+        {
+            follower = root.AddComponent<MonkeyArmyFollower>();
+        }
+
+        SetObjectReference(follower, "m_ServerCharacter", serverCharacter);
+        SetVector3(follower, "m_FollowOffset", unit.FollowOffset);
+        SetBool(follower, "m_StartFollowingOnSpawn", false);
 
         var prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
         Object.DestroyImmediate(root);
@@ -189,6 +199,13 @@ public static class SwanTacticalArmyPrefabBuilder
         serializedObject.ApplyModifiedProperties();
     }
 
+    static void SetVector3(Object target, string propertyName, Vector3 value)
+    {
+        var serializedObject = new SerializedObject(target);
+        serializedObject.FindProperty(propertyName).vector3Value = value;
+        serializedObject.ApplyModifiedProperties();
+    }
+
     static void AssignNestedAnimatorReferences(GameObject root, Animator animator)
     {
         foreach (var behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
@@ -219,15 +236,17 @@ public static class SwanTacticalArmyPrefabBuilder
 
     readonly struct UnitDefinition
     {
-        public UnitDefinition(string name, string classPath, string graphicsPath)
+        public UnitDefinition(string name, string classPath, string graphicsPath, Vector3 followOffset)
         {
             Name = name;
             ClassPath = classPath;
             GraphicsPath = graphicsPath;
+            FollowOffset = followOffset;
         }
 
         public readonly string Name;
         public readonly string ClassPath;
         public readonly string GraphicsPath;
+        public readonly Vector3 FollowOffset;
     }
 }

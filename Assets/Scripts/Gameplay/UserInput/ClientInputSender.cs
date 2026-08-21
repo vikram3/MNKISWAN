@@ -623,6 +623,13 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 //IsPointerOverGameObject() is a simple way to determine if the mouse is over a UI element. If it is, we don't perform mouse input logic,
                 //to model the button "blocking" mouse clicks from falling through and interacting with the world.
 
+                if (Keyboard.current != null &&
+                    Keyboard.current.fKey.wasPressedThisFrame &&
+                    SelectedSwanArmyUnitId != 0)
+                {
+                    ServerSwanSelectedUnitFollowRpc(SelectedSwanArmyUnitId);
+                }
+
                 if (m_Skill1Action.action.WasPressedThisFrame())
                 {
                     RequestAction(CharacterClass.Skill1.ActionID, SkillTriggerStyle.MouseClick);
@@ -662,6 +669,20 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             return input;
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanSelectedUnitFollowRpc(ulong selectedUnitId)
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS" ||
+                !NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(selectedUnitId, out var selectedUnit) ||
+                !selectedUnit.name.StartsWith("SwanTactical_", StringComparison.Ordinal) ||
+                !selectedUnit.TryGetComponent(out MonkeyArmyFollower follower))
+            {
+                return;
+            }
+
+            follower.FollowMonkeyKing();
         }
 
         void UpdateAction1()

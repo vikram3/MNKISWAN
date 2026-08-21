@@ -21,7 +21,11 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         float m_RepathDistance = 0.75f;
 
+        [SerializeField]
+        bool m_StartFollowingOnSpawn = true;
+
         float m_NextUpdateTime;
+        bool m_IsFollowing;
 
         public Vector3 FollowOffset
         {
@@ -41,11 +45,27 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             {
                 m_ServerCharacter = GetComponent<ServerCharacter>();
             }
+
+            m_IsFollowing = m_StartFollowingOnSpawn;
+        }
+
+        public void FollowMonkeyKing()
+        {
+            if (!IsServer)
+            {
+                return;
+            }
+
+            m_IsFollowing = true;
+            m_NextUpdateTime = 0;
         }
 
         void Update()
         {
-            if (Time.time < m_NextUpdateTime || !m_ServerCharacter || m_ServerCharacter.LifeState != LifeState.Alive)
+            if (!m_IsFollowing ||
+                Time.time < m_NextUpdateTime ||
+                !m_ServerCharacter ||
+                m_ServerCharacter.LifeState != LifeState.Alive)
             {
                 return;
             }

@@ -609,7 +609,21 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3288448142974003537, guid: 64cfd098f62285f42918875fef849e88, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3373197712973337356}
+    - targetCorrespondingSourceObject: {fileID: 3288448142974003537, guid: 64cfd098f62285f42918875fef849e88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5803594744872585768}
   m_SourcePrefab: {fileID: 100100000, guid: 64cfd098f62285f42918875fef849e88, type: 3}
+--- !u!114 &1484649511999884919 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8398944656959553575, guid: 64cfd098f62285f42918875fef849e88, type: 3}
+  m_PrefabInstance: {fileID: 6923584549352410704}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5600060517407958785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 920a440eb254ba348915767fd046027a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5600060517407958785 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3288448142974003537, guid: 64cfd098f62285f42918875fef849e88, type: 3}
@@ -627,6 +641,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577787a011376ff498860c2a549fb533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5803594744872585768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5600060517407958785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84d1e6f1846455da0101820464b6660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_ServerCharacter: {fileID: 1484649511999884919}
+  m_FollowOffset: {x: -2, y: 0, z: -2.5}
+  m_UpdateIntervalSeconds: 0.35
+  m_RepathDistance: 0.75
+  m_StartFollowingOnSpawn: 0
 --- !u!4 &5600060517407958795 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3288448142974003547, guid: 64cfd098f62285f42918875fef849e88, type: 3}
