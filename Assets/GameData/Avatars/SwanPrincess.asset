@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162eca1d3dfdadb479b2885672fd797a, type: 3}
+  m_Name: SwanPrincess
+  m_EditorClassIdentifier: 
+  m_Guid: 3ca97a76a8e24726a825a5f89dc35ef0
+  CharacterClass: {fileID: 11400000, guid: ede4c83e980242f7bd8c008b354113fc, type: 2}
+  Graphics: {fileID: 2760169324013038984, guid: 877723aaf2d74851a1623c80f579a452, type: 3}
+  GraphicsCharacterSelect: {fileID: 6020211377990014347, guid: d7c44e26c1af4a6d93823cc2f6c3c820, type: 3}
+  Portrait: {fileID: 21300000, guid: 70182dc50bb8e854882af20d372ec422, type: 3}
