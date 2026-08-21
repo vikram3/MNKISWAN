@@ -45,9 +45,14 @@ namespace Unity.BossRoom.Gameplay.GameState
         [Tooltip("Server-owned Monkey follower army units spawned after the players enter Boss Room.")]
         private NetworkObject[] m_MonkeyFollowerPrefabs;
 
+        [SerializeField]
+        [Tooltip("Server-owned Swan tactical army units spawned after the players enter Boss Room.")]
+        private NetworkObject[] m_SwanTacticalUnitPrefabs;
+
         private List<Transform> m_PlayerSpawnPointsList = null;
 
         bool m_MonkeyFollowersSpawned;
+        bool m_SwanTacticalUnitsSpawned;
 
         public override GameState ActiveState { get { return GameState.BossRoom; } }
 
@@ -144,6 +149,7 @@ namespace Unity.BossRoom.Gameplay.GameState
                 }
 
                 SpawnMonkeyFollowers();
+                SpawnSwanTacticalUnits();
             }
         }
 
@@ -271,6 +277,68 @@ namespace Unity.BossRoom.Gameplay.GameState
 
                 var followerObject = Instantiate(prefab, spawnPosition, monkeyTransform.rotation);
                 followerObject.Spawn(true);
+            }
+        }
+
+        void SpawnSwanTacticalUnits()
+        {
+            if (m_SwanTacticalUnitsSpawned || m_SwanTacticalUnitPrefabs == null || m_SwanTacticalUnitPrefabs.Length == 0)
+            {
+                return;
+            }
+
+            ServerCharacter swan = null;
+            foreach (var player in PlayerServerCharacter.GetPlayerServerCharacters())
+            {
+                if (player && player.CharacterClass.DisplayedName == "SWAN PRINCESS")
+                {
+                    swan = player;
+                    break;
+                }
+            }
+
+            if (!swan)
+            {
+                return;
+            }
+
+            m_SwanTacticalUnitsSpawned = true;
+            var swanTransform = swan.physicsWrapper.Transform;
+
+            for (int i = 0; i < m_SwanTacticalUnitPrefabs.Length; i++)
+            {
+                var prefab = m_SwanTacticalUnitPrefabs[i];
+                if (!prefab)
+                {
+                    continue;
+                }
+
+                var offset = GetSwanTacticalUnitOffset(i);
+                var spawnPosition = swanTransform.position + (swanTransform.rotation * offset);
+                if (NavMesh.SamplePosition(spawnPosition, out var navMeshHit, 8f, NavMesh.AllAreas))
+                {
+                    spawnPosition = navMeshHit.position;
+                }
+
+                var tacticalUnit = Instantiate(prefab, spawnPosition, swanTransform.rotation);
+                tacticalUnit.Spawn(true);
+            }
+        }
+
+        static Vector3 GetSwanTacticalUnitOffset(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return new Vector3(-2f, 0f, 2.5f);
+                case 1:
+                    return new Vector3(2f, 0f, 2.5f);
+                case 2:
+                    return new Vector3(-3f, 0f, 4.25f);
+                case 3:
+                    return new Vector3(3f, 0f, 4.25f);
+                default:
+                    return Vector3.zero;
             }
         }
 
