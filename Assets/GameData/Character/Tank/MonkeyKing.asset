@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharacterType: 0
   Skill1: {fileID: 11400000, guid: 440efab726efb408aa7eff352e343dea, type: 2}
-  Skill2: {fileID: 11400000, guid: 9a1ce723026b4445dbea801fc29cf3df, type: 2}
-  Skill3: {fileID: 0}
+  Skill2: {fileID: 11400000, guid: c16726f052c684318bf25c8dd0efb59f, type: 2}
+  Skill3: {fileID: 11400000, guid: 9a1ce723026b4445dbea801fc29cf3df, type: 2}
   BaseHP: {fileID: 11400000, guid: d94f03bb5cb7163429507898b11e7994, type: 2}
   BaseMana: 20
   Speed: 5
