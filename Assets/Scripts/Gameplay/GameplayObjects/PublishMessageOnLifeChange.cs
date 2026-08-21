@@ -54,6 +54,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             {
                 CharacterName = m_NameState != null ? m_NameState.Name.Value : (FixedPlayerName)m_CharacterName,
                 CharacterType = m_ServerCharacter.CharacterClass.CharacterType,
+                IsMissionHealth = m_ServerCharacter.CharacterClass.IsMissionHealth,
                 NewLifeState = newState
             });
         }

@@ -19,6 +19,7 @@ MonoBehaviour:
   BaseHP: {fileID: 11400000, guid: d94f03bb5cb7163429507898b11e7994, type: 2}
   BaseMana: 20
   Speed: 5
+  IsMissionHealth: 1
   IsNpc: 0
   DetectRange: 0
   DisplayedName: MONKEY KING

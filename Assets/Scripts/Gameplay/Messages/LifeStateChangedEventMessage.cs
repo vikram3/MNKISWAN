@@ -10,6 +10,7 @@ namespace Unity.BossRoom.Gameplay.Messages
     {
         public LifeState NewLifeState;
         public CharacterTypeEnum CharacterType;
+        public bool IsMissionHealth;
         public FixedPlayerName CharacterName;
     }
 }

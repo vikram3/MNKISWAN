@@ -136,6 +136,16 @@ namespace Unity.BossRoom.Gameplay.UI
             return networkName.Name.Value;
         }
 
+        string GetPartyDisplayName(ServerCharacter serverCharacter)
+        {
+            if (serverCharacter.CharacterClass.IsMissionHealth)
+            {
+                return $"MISSION: {serverCharacter.CharacterClass.DisplayedName}";
+            }
+
+            return GetPlayerName(serverCharacter);
+        }
+
         // set the class type for an ally - allies are tracked  by appearance so you must also provide appearance id
         void SetAllyData(ClientPlayerAvatar clientPlayerAvatar)
         {
@@ -175,7 +185,7 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             m_PartyHealthSliders[slot].maxValue = serverCharacter.CharacterClass.BaseHP.Value;
             m_PartyHealthSliders[slot].value = serverCharacter.HitPoints;
-            m_PartyNames[slot].text = GetPlayerName(serverCharacter);
+            m_PartyNames[slot].text = GetPartyDisplayName(serverCharacter);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             m_PartyHealthGodModeImages[slot].gameObject.SetActive(serverCharacter.NetLifeState.IsGodMode.Value);

@@ -42,6 +42,9 @@ namespace Unity.BossRoom.Gameplay.Configuration
         [Tooltip("Highest world-space height this character can fly at.")]
         public float MaxAerialHeight;
 
+        [Tooltip("If true, this character's defeat causes the mission to fail.")]
+        public bool IsMissionHealth;
+
         [Tooltip("Set to true if this represents an NPC, as opposed to a player.")]
         public bool IsNpc;
 
