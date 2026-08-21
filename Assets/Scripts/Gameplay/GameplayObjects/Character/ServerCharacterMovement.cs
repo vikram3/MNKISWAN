@@ -97,7 +97,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             m_MovementState = MovementState.PathFollowing;
             if (UseAerialMovement)
             {
-                m_AerialTargetPosition = position;
+                m_AerialTargetPosition = ClampAerialPosition(position);
                 return;
             }
 
@@ -130,7 +130,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             m_MovementState = MovementState.PathFollowing;
             if (UseAerialMovement)
             {
-                m_AerialTargetPosition = followTransform.position;
+                m_AerialTargetPosition = ClampAerialPosition(followTransform.position);
                 return;
             }
 
@@ -180,6 +180,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             CancelMove();
             if (UseAerialMovement)
             {
+                newPosition = ClampAerialPosition(newPosition);
                 transform.position = newPosition;
                 m_Rigidbody.position = transform.position;
                 m_Rigidbody.rotation = transform.rotation;
@@ -281,6 +282,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             if (UseAerialMovement)
             {
                 transform.position += movementVector;
+                transform.position = ClampAerialPosition(transform.position);
             }
             else
             {
@@ -296,6 +298,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             // After moving adjust the position of the dynamic rigidbody.
             m_Rigidbody.position = transform.position;
             m_Rigidbody.rotation = transform.rotation;
+        }
+
+        Vector3 ClampAerialPosition(Vector3 position)
+        {
+            var characterClass = m_CharLogic.CharacterClass;
+            var minHeight = characterClass.MinAerialHeight;
+            var maxHeight = Mathf.Max(minHeight, characterClass.MaxAerialHeight);
+            position.y = Mathf.Clamp(position.y, minHeight, maxHeight);
+            return position;
         }
 
         /// <summary>

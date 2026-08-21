@@ -36,6 +36,12 @@ namespace Unity.BossRoom.Gameplay.Configuration
         [Tooltip("If true, this character moves directly in 3D instead of following the NavMesh.")]
         public bool UseAerialMovement;
 
+        [Tooltip("Lowest world-space height this character can fly at.")]
+        public float MinAerialHeight;
+
+        [Tooltip("Highest world-space height this character can fly at.")]
+        public float MaxAerialHeight;
+
         [Tooltip("Set to true if this represents an NPC, as opposed to a player.")]
         public bool IsNpc;
 

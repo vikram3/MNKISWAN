@@ -20,6 +20,8 @@ MonoBehaviour:
   BaseMana: 50
   Speed: 5
   UseAerialMovement: 1
+  MinAerialHeight: 0
+  MaxAerialHeight: 8
   IsNpc: 0
   DetectRange: 0
   DisplayedName: SWAN PRINCESS
