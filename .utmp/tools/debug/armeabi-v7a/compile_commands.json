@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Users/vkrm0/Videos/com.unity.multiplayer.samples.coop-3.0.0/.utmp/Debug/2p106565/armeabi-v7a",
+  "command": "D:\\Installed\\Unity\\6000.0.52f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\NDK\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=armv7-none-linux-androideabi23 --sysroot=D:/Installed/Unity/6000.0.52f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DEXTERNAL_FRAME_PACING_CODE -Dswappywrapper_EXPORTS -IC:/Users/vkrm0/Videos/com.unity.multiplayer.samples.coop-3.0.0/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/FramePacing -isystem C:/Users/vkrm0/.gradle/caches/8.11/transforms/56cf3a67cfe0327f95b35bbfa69aba26/transformed/jetified-games-frame-pacing-1.10.0/prefab/modules/swappy_static/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -Wall -Wextra -pedantic -Werror -fno-limit-debug-info  -fPIC -o FramePacing\\CMakeFiles\\swappywrapper.dir\\UnitySwappyWrapper.cpp.o -c C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\FramePacing\\UnitySwappyWrapper.cpp",
+  "file": "C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\FramePacing\\UnitySwappyWrapper.cpp"
+}
+]

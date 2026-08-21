@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\CMakeLists.txt",
+    "C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\src\\main\\cpp\\FramePacing\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "D:\\Installed\\Unity\\6000.0.52f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\.utmp\\Debug\\2p106565\\armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "D:\\Installed\\Unity\\6000.0.52f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\SDK\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\.utmp\\Debug\\2p106565\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "swappywrapper::@7e25bd1f32ce224db4e9": {
+      "artifactName": "swappywrapper",
+      "abi": "armeabi-v7a",
+      "output": "C:\\Users\\vkrm0\\Videos\\com.unity.multiplayer.samples.coop-3.0.0\\Library\\Bee\\Android\\Prj\\IL2CPP\\Gradle\\unityLibrary\\build\\intermediates\\cxx\\Debug\\2p106565\\obj\\armeabi-v7a\\libswappywrapper.so",
+      "runtimeFiles": []
+    }
+  }
+}

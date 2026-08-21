@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89305aa391d1c5141bbe1628d930a2c5, type: 3}
+  m_Name: 0_TableOfContents
+  m_EditorClassIdentifier: 
+  Modified:
+    m_PersistentCalls:
+      m_Calls: []
+  ParentContainer: {fileID: 0}
+  OrderInView: 0
+  BackgroundImage: {fileID: 0}
+  Title:
+    m_Untranslated: Table of Contents
+  Subtitle:
+    m_Untranslated: Resources to learn more about Netcode For GameObject's APIs
+  Description:
+    m_Untranslated: 
+  ProjectLayout: {fileID: 102900000, guid: 84fb82f6671b7634092a1d564bf7d4a0, type: 3}
+  Sections:
+  - OrderInView: 6
+    Heading:
+      m_Untranslated: Request a feature or report a bug
+    Text:
+      m_Untranslated: Help us make the best samples!
+    Metadata: 
+    Url: https://github.com/Unity-Technologies/com.unity.multiplayer.samples.coop/issues/new/choose
+    Image: {fileID: 2800000, guid: 149f7ad236e738b40bdea2bff10007a0, type: 3}
+    Tutorial: {fileID: 0}
+  - OrderInView: 7
+    Heading:
+      m_Untranslated: Boss Room Feedback Form.
+    Text:
+      m_Untranslated: Got feedback about your experience with Boss Room? Let us know!
+    Metadata: 
+    Url: https://unitytech.typeform.com/bossroom
+    Image: {fileID: 2800000, guid: caa22bb026fa84979ba1be2779739367, type: 3}
+    Tutorial: {fileID: 0}
