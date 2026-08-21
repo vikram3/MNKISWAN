@@ -33,6 +33,9 @@ namespace Unity.BossRoom.Gameplay.Configuration
         [Tooltip("Base movement speed of this character class (in meters/sec)")]
         public float Speed;
 
+        [Tooltip("If true, this character moves directly in 3D instead of following the NavMesh.")]
+        public bool UseAerialMovement;
+
         [Tooltip("Set to true if this represents an NPC, as opposed to a player.")]
         public bool IsNpc;
 

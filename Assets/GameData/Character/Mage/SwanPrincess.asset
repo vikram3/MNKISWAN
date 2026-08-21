@@ -19,6 +19,7 @@ MonoBehaviour:
   BaseHP: {fileID: 11400000, guid: 29b7e8c8454b16743bcf5141cc8221fa, type: 2}
   BaseMana: 50
   Speed: 5
+  UseAerialMovement: 1
   IsNpc: 0
   DetectRange: 0
   DisplayedName: SWAN PRINCESS

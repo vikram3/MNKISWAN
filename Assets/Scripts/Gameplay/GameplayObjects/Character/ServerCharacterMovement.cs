@@ -46,6 +46,10 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         // this one is specific to knockback mode
         private Vector3 m_KnockbackVector;
 
+        private Vector3 m_AerialTargetPosition;
+
+        bool UseAerialMovement => m_CharLogic.CharacterClass.UseAerialMovement;
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public bool TeleportModeActivated { get; set; }
 
@@ -67,10 +71,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 // Only enable server component on servers
                 enabled = true;
 
-                // On the server enable navMeshAgent and initialize
-                m_NavMeshAgent.enabled = true;
-                m_NavigationSystem = GameObject.FindGameObjectWithTag(NavigationSystem.NavigationSystemTag).GetComponent<NavigationSystem>();
-                m_NavPath = new DynamicNavPath(m_NavMeshAgent, m_NavigationSystem);
+                if (!UseAerialMovement)
+                {
+                    // On the server enable navMeshAgent and initialize
+                    m_NavMeshAgent.enabled = true;
+                    m_NavigationSystem = GameObject.FindGameObjectWithTag(NavigationSystem.NavigationSystemTag).GetComponent<NavigationSystem>();
+                    m_NavPath = new DynamicNavPath(m_NavMeshAgent, m_NavigationSystem);
+                }
             }
         }
 
@@ -88,12 +95,18 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 #endif
             m_MovementState = MovementState.PathFollowing;
+            if (UseAerialMovement)
+            {
+                m_AerialTargetPosition = position;
+                return;
+            }
+
             m_NavPath.SetTargetPosition(position);
         }
 
         public void StartForwardCharge(float speed, float duration)
         {
-            m_NavPath.Clear();
+            m_NavPath?.Clear();
             m_MovementState = MovementState.Charging;
             m_ForcedSpeed = speed;
             m_SpecialModeDurationRemaining = duration;
@@ -101,7 +114,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         public void StartKnockback(Vector3 knocker, float speed, float duration)
         {
-            m_NavPath.Clear();
+            m_NavPath?.Clear();
             m_MovementState = MovementState.Knockback;
             m_KnockbackVector = transform.position - knocker;
             m_ForcedSpeed = speed;
@@ -115,6 +128,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         public void FollowTransform(Transform followTransform)
         {
             m_MovementState = MovementState.PathFollowing;
+            if (UseAerialMovement)
+            {
+                m_AerialTargetPosition = followTransform.position;
+                return;
+            }
+
             m_NavPath.FollowTransform(followTransform);
         }
 
@@ -159,6 +178,14 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         public void Teleport(Vector3 newPosition)
         {
             CancelMove();
+            if (UseAerialMovement)
+            {
+                transform.position = newPosition;
+                m_Rigidbody.position = transform.position;
+                m_Rigidbody.rotation = transform.rotation;
+                return;
+            }
+
             if (!m_NavMeshAgent.Warp(newPosition))
             {
                 // warping failed! We're off the navmesh somehow. Weird... but we can still teleport
@@ -192,7 +219,10 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             {
                 // Disable server components when despawning
                 enabled = false;
-                m_NavMeshAgent.enabled = false;
+                if (m_NavMeshAgent)
+                {
+                    m_NavMeshAgent.enabled = false;
+                }
             }
         }
 
@@ -231,7 +261,14 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             else
             {
                 var desiredMovementAmount = GetBaseMovementSpeed() * Time.fixedDeltaTime;
-                movementVector = m_NavPath.MoveAlongPath(desiredMovementAmount);
+                if (UseAerialMovement)
+                {
+                    movementVector = Vector3.MoveTowards(transform.position, m_AerialTargetPosition, desiredMovementAmount) - transform.position;
+                }
+                else
+                {
+                    movementVector = m_NavPath.MoveAlongPath(desiredMovementAmount);
+                }
 
                 // If we didn't move stop moving.
                 if (movementVector == Vector3.zero)
@@ -241,8 +278,20 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 }
             }
 
-            m_NavMeshAgent.Move(movementVector);
-            transform.rotation = Quaternion.LookRotation(movementVector);
+            if (UseAerialMovement)
+            {
+                transform.position += movementVector;
+            }
+            else
+            {
+                m_NavMeshAgent.Move(movementVector);
+            }
+
+            var horizontalMovementVector = new Vector3(movementVector.x, 0, movementVector.z);
+            if (horizontalMovementVector.sqrMagnitude > 0.0001f)
+            {
+                transform.rotation = Quaternion.LookRotation(horizontalMovementVector);
+            }
 
             // After moving adjust the position of the dynamic rigidbody.
             m_Rigidbody.position = transform.position;

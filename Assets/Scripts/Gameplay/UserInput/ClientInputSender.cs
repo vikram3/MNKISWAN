@@ -26,6 +26,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
 
         const float k_TargetMoveTimeout = 0.45f; //prevent moves for this long after targeting someone (helps prevent walking to the guy you clicked).
 
+        const float k_AerialVerticalInputDistance = 0.2f;
+
         float m_LastSentMove;
 
         // Cache raycast hit array so that we can use non alloc raycasts
@@ -117,6 +119,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
         BaseActionInput m_CurrentSkillInput;
 
         bool m_MoveRequest;
+
+        bool m_AerialMoveRequest;
 
         Camera m_MainCamera;
 
@@ -320,12 +324,32 @@ namespace Unity.BossRoom.Gameplay.UserInput
                                 k_MaxNavMeshDistance,
                                 NavMesh.AllAreas))
                         {
-                            m_ServerCharacter.ServerSendCharacterInputRpc(hit.position);
+                            var movementTarget = hit.position;
+                            if (CharacterClass.UseAerialMovement)
+                            {
+                                movementTarget.y = m_PhysicsWrapper.Transform.position.y;
+                            }
+
+                            m_ServerCharacter.ServerSendCharacterInputRpc(movementTarget);
 
                             //Send our client only click request
-                            ClientMoveEvent?.Invoke(hit.position);
+                            ClientMoveEvent?.Invoke(movementTarget);
                         }
                     }
+                }
+            }
+
+            if (m_AerialMoveRequest)
+            {
+                m_AerialMoveRequest = false;
+                if ((Time.time - m_LastSentMove) > k_MoveSendRateSeconds)
+                {
+                    m_LastSentMove = Time.time;
+                    var movementTarget = m_PhysicsWrapper.Transform.position;
+                    movementTarget.y += GetAerialVerticalInput() * k_AerialVerticalInputDistance;
+                    m_ServerCharacter.ServerSendCharacterInputRpc(movementTarget);
+
+                    ClientMoveEvent?.Invoke(movementTarget);
                 }
             }
         }
@@ -592,7 +616,32 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 {
                     m_MoveRequest = true;
                 }
+
+                if (CharacterClass.UseAerialMovement && GetAerialVerticalInput() != 0)
+                {
+                    m_AerialMoveRequest = true;
+                }
             }
+        }
+
+        int GetAerialVerticalInput()
+        {
+            if (Keyboard.current == null)
+            {
+                return 0;
+            }
+
+            var input = 0;
+            if (Keyboard.current.spaceKey.isPressed)
+            {
+                input++;
+            }
+            if (Keyboard.current.leftCtrlKey.isPressed)
+            {
+                input--;
+            }
+
+            return input;
         }
 
         void UpdateAction1()
