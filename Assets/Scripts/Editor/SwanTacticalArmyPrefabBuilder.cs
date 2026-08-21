@@ -86,6 +86,11 @@ public static class SwanTacticalArmyPrefabBuilder
         var animationHandler = root.GetComponent<ServerAnimationHandler>();
         SetObjectReference(animationHandler, "m_NetworkAnimator", networkAnimator);
 
+        if (!root.GetComponent<SwanTacticalUnit>())
+        {
+            root.AddComponent<SwanTacticalUnit>();
+        }
+
         var prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
         Object.DestroyImmediate(root);
         return prefab.GetComponent<NetworkObject>();

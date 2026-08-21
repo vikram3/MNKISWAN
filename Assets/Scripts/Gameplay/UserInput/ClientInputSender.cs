@@ -144,6 +144,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
 
         ServerCharacter m_TargetServerCharacter;
 
+        public ulong SelectedSwanArmyUnitId { get; private set; }
+
         void Awake()
         {
             m_MainCamera = Camera.main;
@@ -237,7 +239,25 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 m_TargetServerCharacter.NetLifeState.LifeState.OnValueChanged += OnTargetLifeStateChanged;
             }
 
+            UpdateSwanArmySelection(newValue);
             UpdateAction1();
+        }
+
+        void UpdateSwanArmySelection(ulong targetId)
+        {
+            SelectedSwanArmyUnitId = 0;
+
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS")
+            {
+                return;
+            }
+
+            if (targetId != 0 &&
+                NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out var selection) &&
+                selection.name.StartsWith("SwanTactical_", StringComparison.Ordinal))
+            {
+                SelectedSwanArmyUnitId = targetId;
+            }
         }
 
         void OnHeldNetworkObjectChanged(ulong previousValue, ulong newValue)

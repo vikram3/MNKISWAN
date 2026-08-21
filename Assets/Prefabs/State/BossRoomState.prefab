@@ -99,6 +99,11 @@ MonoBehaviour:
   - {fileID: 2035663394284705414, guid: b31e6e592482e1b4bab1317bac42cc95, type: 3}
   - {fileID: 8688215621633909215, guid: eed565c88433fd141bf547f8f0a83944, type: 3}
   - {fileID: 7026411974578713958, guid: df3d7da9d3b3bcc418e6e5790712b686, type: 3}
+  m_SwanTacticalUnitPrefabs:
+  - {fileID: 5600060517407958794, guid: 29d7deb58ae58c04d83294375642f6f5, type: 3}
+  - {fileID: 3247673706981500075, guid: 78a4f725e0b9000439722c8400b870e4, type: 3}
+  - {fileID: 7105605915422394318, guid: 00c56eb0e002f1049a4c65323c8b9d66, type: 3}
+  - {fileID: 6156668040423310258, guid: af0386ca0dc033646b2582fc50fd9075, type: 3}
 --- !u!114 &1290852967062359934
 MonoBehaviour:
   m_ObjectHideFlags: 0
