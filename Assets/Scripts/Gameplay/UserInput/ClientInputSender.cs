@@ -245,10 +245,9 @@ namespace Unity.BossRoom.Gameplay.UserInput
 
         void UpdateSwanArmySelection(ulong targetId)
         {
-            SelectedSwanArmyUnitId = 0;
-
             if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS")
             {
+                SelectedSwanArmyUnitId = 0;
                 return;
             }
 
@@ -637,6 +636,14 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     ServerSwanSelectedUnitHoldPositionRpc(SelectedSwanArmyUnitId);
                 }
 
+                if (Keyboard.current != null &&
+                    Keyboard.current.aKey.wasPressedThisFrame &&
+                    SelectedSwanArmyUnitId != 0 &&
+                    m_ServerCharacter.TargetId.Value != 0)
+                {
+                    ServerSwanSelectedUnitAttackRpc(SelectedSwanArmyUnitId, m_ServerCharacter.TargetId.Value);
+                }
+
                 if (m_Skill1Action.action.WasPressedThisFrame())
                 {
                     RequestAction(CharacterClass.Skill1.ActionID, SkillTriggerStyle.MouseClick);
@@ -704,6 +711,26 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.HoldPosition();
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanSelectedUnitAttackRpc(ulong selectedUnitId, ulong targetId)
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS" ||
+                !NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(selectedUnitId, out var selectedUnit) ||
+                !selectedUnit.name.StartsWith("SwanTactical_", StringComparison.Ordinal) ||
+                !selectedUnit.TryGetComponent(out MonkeyArmyFollower follower) ||
+                !NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out var targetUnit) ||
+                !targetUnit.TryGetComponent(out ServerCharacter targetCharacter) ||
+                !targetCharacter.IsNpc ||
+                targetCharacter.LifeState != LifeState.Alive ||
+                targetUnit.name.StartsWith("SwanTactical_", StringComparison.Ordinal) ||
+                targetUnit.name.StartsWith("MonkeyArmy_", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            follower.AttackTarget(targetId);
         }
 
         void UpdateAction1()

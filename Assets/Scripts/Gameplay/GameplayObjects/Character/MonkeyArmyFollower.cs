@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.BossRoom.Gameplay.Actions;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -26,6 +27,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         float m_NextUpdateTime;
         bool m_IsFollowing;
+        ulong m_AttackTargetId;
 
         public Vector3 FollowOffset
         {
@@ -57,6 +59,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_IsFollowing = true;
+            m_AttackTargetId = 0;
             m_NextUpdateTime = 0;
         }
 
@@ -68,13 +71,26 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_IsFollowing = false;
+            m_AttackTargetId = 0;
+            m_ServerCharacter.ActionPlayer.ClearActions(true);
             m_ServerCharacter.Movement.CancelMove();
+        }
+
+        public void AttackTarget(ulong targetId)
+        {
+            if (!IsServer)
+            {
+                return;
+            }
+
+            m_IsFollowing = false;
+            m_AttackTargetId = targetId;
+            m_NextUpdateTime = 0;
         }
 
         void Update()
         {
-            if (!m_IsFollowing ||
-                Time.time < m_NextUpdateTime ||
+            if (Time.time < m_NextUpdateTime ||
                 !m_ServerCharacter ||
                 m_ServerCharacter.LifeState != LifeState.Alive)
             {
@@ -82,6 +98,17 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_NextUpdateTime = Time.time + m_UpdateIntervalSeconds;
+
+            if (m_AttackTargetId != 0)
+            {
+                UpdateAttackTarget();
+                return;
+            }
+
+            if (!m_IsFollowing)
+            {
+                return;
+            }
 
             var monkey = FindMonkeyKing();
             if (!monkey || monkey.LifeState != LifeState.Alive)
@@ -102,6 +129,41 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             {
                 m_ServerCharacter.Movement.SetMovementTarget(desiredPosition);
             }
+        }
+
+        void UpdateAttackTarget()
+        {
+            if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(m_AttackTargetId, out var targetObject) ||
+                !targetObject.TryGetComponent(out ServerCharacter targetCharacter) ||
+                targetCharacter.LifeState != LifeState.Alive)
+            {
+                m_AttackTargetId = 0;
+                return;
+            }
+
+            var attack = m_ServerCharacter.CharacterClass.Skill1;
+            if (!attack || !m_ServerCharacter.ActionPlayer.IsReuseTimeElapsed(attack.ActionID))
+            {
+                return;
+            }
+
+            if (m_ServerCharacter.ActionPlayer.GetActiveActionInfo(out var activeAction) &&
+                activeAction.TargetIds != null &&
+                activeAction.TargetIds.Length > 0 &&
+                activeAction.TargetIds[0] == m_AttackTargetId)
+            {
+                return;
+            }
+
+            var attackData = new ActionRequestData
+            {
+                ActionID = attack.ActionID,
+                TargetIds = new[] { m_AttackTargetId },
+                ShouldClose = true,
+                Direction = m_ServerCharacter.physicsWrapper.Transform.forward
+            };
+
+            m_ServerCharacter.ActionPlayer.PlayAction(ref attackData);
         }
 
         static ServerCharacter FindMonkeyKing()
