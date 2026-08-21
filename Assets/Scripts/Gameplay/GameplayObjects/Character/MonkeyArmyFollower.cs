@@ -25,8 +25,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         bool m_StartFollowingOnSpawn = true;
 
+        [SerializeField]
+        float m_ProtectThreatRadius = 8f;
+
         float m_NextUpdateTime;
         bool m_IsFollowing;
+        bool m_IsProtecting;
         ulong m_AttackTargetId;
 
         public Vector3 FollowOffset
@@ -59,6 +63,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_IsFollowing = true;
+            m_IsProtecting = false;
             m_AttackTargetId = 0;
             m_NextUpdateTime = 0;
         }
@@ -71,6 +76,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_IsFollowing = false;
+            m_IsProtecting = false;
             m_AttackTargetId = 0;
             m_ServerCharacter.ActionPlayer.ClearActions(true);
             m_ServerCharacter.Movement.CancelMove();
@@ -84,7 +90,21 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_IsFollowing = false;
+            m_IsProtecting = false;
             m_AttackTargetId = targetId;
+            m_NextUpdateTime = 0;
+        }
+
+        public void ProtectMonkeyKing()
+        {
+            if (!IsServer)
+            {
+                return;
+            }
+
+            m_IsFollowing = false;
+            m_IsProtecting = true;
+            m_AttackTargetId = 0;
             m_NextUpdateTime = 0;
         }
 
@@ -98,6 +118,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             }
 
             m_NextUpdateTime = Time.time + m_UpdateIntervalSeconds;
+
+            if (m_IsProtecting)
+            {
+                UpdateProtectKing();
+                return;
+            }
 
             if (m_AttackTargetId != 0)
             {
@@ -116,19 +142,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 return;
             }
 
-            var monkeyTransform = monkey.physicsWrapper.Transform;
-            var desiredPosition = monkeyTransform.position + (monkeyTransform.rotation * m_FollowOffset);
-
-            if (NavMesh.SamplePosition(desiredPosition, out var navMeshHit, 2f, NavMesh.AllAreas))
-            {
-                desiredPosition = navMeshHit.position;
-            }
-
-            var currentPosition = m_ServerCharacter.physicsWrapper.Transform.position;
-            if ((currentPosition - desiredPosition).sqrMagnitude > m_RepathDistance * m_RepathDistance)
-            {
-                m_ServerCharacter.Movement.SetMovementTarget(desiredPosition);
-            }
+            MoveNearMonkey(monkey);
         }
 
         void UpdateAttackTarget()
@@ -164,6 +178,77 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             };
 
             m_ServerCharacter.ActionPlayer.PlayAction(ref attackData);
+        }
+
+        void UpdateProtectKing()
+        {
+            var monkey = FindMonkeyKing();
+            if (!monkey || monkey.LifeState != LifeState.Alive)
+            {
+                return;
+            }
+
+            var threat = FindClosestThreatNear(monkey, m_ProtectThreatRadius);
+            if (threat)
+            {
+                m_AttackTargetId = threat.NetworkObjectId;
+                UpdateAttackTarget();
+                return;
+            }
+
+            if (m_AttackTargetId != 0)
+            {
+                m_AttackTargetId = 0;
+                m_ServerCharacter.ActionPlayer.ClearActions(true);
+            }
+
+            MoveNearMonkey(monkey);
+        }
+
+        void MoveNearMonkey(ServerCharacter monkey)
+        {
+            var monkeyTransform = monkey.physicsWrapper.Transform;
+            var desiredPosition = monkeyTransform.position + (monkeyTransform.rotation * m_FollowOffset);
+
+            if (NavMesh.SamplePosition(desiredPosition, out var navMeshHit, 2f, NavMesh.AllAreas))
+            {
+                desiredPosition = navMeshHit.position;
+            }
+
+            var currentPosition = m_ServerCharacter.physicsWrapper.Transform.position;
+            if ((currentPosition - desiredPosition).sqrMagnitude > m_RepathDistance * m_RepathDistance)
+            {
+                m_ServerCharacter.Movement.SetMovementTarget(desiredPosition);
+            }
+        }
+
+        static ServerCharacter FindClosestThreatNear(ServerCharacter monkey, float range)
+        {
+            var monkeyPosition = monkey.physicsWrapper.Transform.position;
+            var closestDistanceSqr = range * range;
+            ServerCharacter closestThreat = null;
+
+            foreach (var spawnedObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
+            {
+                if (!spawnedObject ||
+                    !spawnedObject.TryGetComponent(out ServerCharacter character) ||
+                    !character.IsNpc ||
+                    character.LifeState != LifeState.Alive ||
+                    spawnedObject.name.StartsWith("SwanTactical_", System.StringComparison.Ordinal) ||
+                    spawnedObject.name.StartsWith("MonkeyArmy_", System.StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                var distanceSqr = (character.physicsWrapper.Transform.position - monkeyPosition).sqrMagnitude;
+                if (distanceSqr < closestDistanceSqr)
+                {
+                    closestDistanceSqr = distanceSqr;
+                    closestThreat = character;
+                }
+            }
+
+            return closestThreat;
         }
 
         static ServerCharacter FindMonkeyKing()

@@ -644,6 +644,13 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     ServerSwanSelectedUnitAttackRpc(SelectedSwanArmyUnitId, m_ServerCharacter.TargetId.Value);
                 }
 
+                if (Keyboard.current != null &&
+                    Keyboard.current.pKey.wasPressedThisFrame &&
+                    SelectedSwanArmyUnitId != 0)
+                {
+                    ServerSwanSelectedUnitProtectKingRpc(SelectedSwanArmyUnitId);
+                }
+
                 if (m_Skill1Action.action.WasPressedThisFrame())
                 {
                     RequestAction(CharacterClass.Skill1.ActionID, SkillTriggerStyle.MouseClick);
@@ -731,6 +738,20 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.AttackTarget(targetId);
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanSelectedUnitProtectKingRpc(ulong selectedUnitId)
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS" ||
+                !NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(selectedUnitId, out var selectedUnit) ||
+                !selectedUnit.name.StartsWith("SwanTactical_", StringComparison.Ordinal) ||
+                !selectedUnit.TryGetComponent(out MonkeyArmyFollower follower))
+            {
+                return;
+            }
+
+            follower.ProtectMonkeyKing();
         }
 
         void UpdateAction1()
