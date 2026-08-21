@@ -146,6 +146,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
 
         public ulong SelectedSwanArmyUnitId { get; private set; }
 
+        public bool IsSwanArmyGroupSelected { get; private set; }
+
         void Awake()
         {
             m_MainCamera = Camera.main;
@@ -248,6 +250,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS")
             {
                 SelectedSwanArmyUnitId = 0;
+                IsSwanArmyGroupSelected = false;
                 return;
             }
 
@@ -256,6 +259,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 selection.name.StartsWith("SwanTactical_", StringComparison.Ordinal))
             {
                 SelectedSwanArmyUnitId = targetId;
+                IsSwanArmyGroupSelected = false;
             }
         }
 
@@ -623,32 +627,68 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 //to model the button "blocking" mouse clicks from falling through and interacting with the world.
 
                 if (Keyboard.current != null &&
-                    Keyboard.current.fKey.wasPressedThisFrame &&
-                    SelectedSwanArmyUnitId != 0)
+                    Keyboard.current.gKey.wasPressedThisFrame &&
+                    m_ServerCharacter.CharacterClass.DisplayedName == "SWAN PRINCESS")
                 {
-                    ServerSwanSelectedUnitFollowRpc(SelectedSwanArmyUnitId);
+                    SelectedSwanArmyUnitId = 0;
+                    IsSwanArmyGroupSelected = true;
+                }
+
+                if (Keyboard.current != null &&
+                    Keyboard.current.fKey.wasPressedThisFrame &&
+                    HasSwanArmyCommandSelection())
+                {
+                    if (IsSwanArmyGroupSelected)
+                    {
+                        ServerSwanArmyGroupFollowRpc();
+                    }
+                    else
+                    {
+                        ServerSwanSelectedUnitFollowRpc(SelectedSwanArmyUnitId);
+                    }
                 }
 
                 if (Keyboard.current != null &&
                     Keyboard.current.hKey.wasPressedThisFrame &&
-                    SelectedSwanArmyUnitId != 0)
+                    HasSwanArmyCommandSelection())
                 {
-                    ServerSwanSelectedUnitHoldPositionRpc(SelectedSwanArmyUnitId);
+                    if (IsSwanArmyGroupSelected)
+                    {
+                        ServerSwanArmyGroupHoldPositionRpc();
+                    }
+                    else
+                    {
+                        ServerSwanSelectedUnitHoldPositionRpc(SelectedSwanArmyUnitId);
+                    }
                 }
 
                 if (Keyboard.current != null &&
                     Keyboard.current.aKey.wasPressedThisFrame &&
-                    SelectedSwanArmyUnitId != 0 &&
+                    HasSwanArmyCommandSelection() &&
                     m_ServerCharacter.TargetId.Value != 0)
                 {
-                    ServerSwanSelectedUnitAttackRpc(SelectedSwanArmyUnitId, m_ServerCharacter.TargetId.Value);
+                    if (IsSwanArmyGroupSelected)
+                    {
+                        ServerSwanArmyGroupAttackRpc(m_ServerCharacter.TargetId.Value);
+                    }
+                    else
+                    {
+                        ServerSwanSelectedUnitAttackRpc(SelectedSwanArmyUnitId, m_ServerCharacter.TargetId.Value);
+                    }
                 }
 
                 if (Keyboard.current != null &&
                     Keyboard.current.pKey.wasPressedThisFrame &&
-                    SelectedSwanArmyUnitId != 0)
+                    HasSwanArmyCommandSelection())
                 {
-                    ServerSwanSelectedUnitProtectKingRpc(SelectedSwanArmyUnitId);
+                    if (IsSwanArmyGroupSelected)
+                    {
+                        ServerSwanArmyGroupProtectKingRpc();
+                    }
+                    else
+                    {
+                        ServerSwanSelectedUnitProtectKingRpc(SelectedSwanArmyUnitId);
+                    }
                 }
 
                 if (m_Skill1Action.action.WasPressedThisFrame())
@@ -690,6 +730,11 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             return input;
+        }
+
+        bool HasSwanArmyCommandSelection()
+        {
+            return IsSwanArmyGroupSelected || SelectedSwanArmyUnitId != 0;
         }
 
         [Rpc(SendTo.Server)]
@@ -752,6 +797,86 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.ProtectMonkeyKing();
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanArmyGroupFollowRpc()
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS")
+            {
+                return;
+            }
+
+            foreach (var follower in GetSwanTacticalUnitFollowers())
+            {
+                follower.FollowMonkeyKing();
+            }
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanArmyGroupHoldPositionRpc()
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS")
+            {
+                return;
+            }
+
+            foreach (var follower in GetSwanTacticalUnitFollowers())
+            {
+                follower.HoldPosition();
+            }
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanArmyGroupAttackRpc(ulong targetId)
+        {
+            if (!IsValidSwanArmyAttackTarget(targetId))
+            {
+                return;
+            }
+
+            foreach (var follower in GetSwanTacticalUnitFollowers())
+            {
+                follower.AttackTarget(targetId);
+            }
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanArmyGroupProtectKingRpc()
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS")
+            {
+                return;
+            }
+
+            foreach (var follower in GetSwanTacticalUnitFollowers())
+            {
+                follower.ProtectMonkeyKing();
+            }
+        }
+
+        bool IsValidSwanArmyAttackTarget(ulong targetId)
+        {
+            return m_ServerCharacter.CharacterClass.DisplayedName == "SWAN PRINCESS" &&
+                NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out var targetUnit) &&
+                targetUnit.TryGetComponent(out ServerCharacter targetCharacter) &&
+                targetCharacter.IsNpc &&
+                targetCharacter.LifeState == LifeState.Alive &&
+                !targetUnit.name.StartsWith("SwanTactical_", StringComparison.Ordinal) &&
+                !targetUnit.name.StartsWith("MonkeyArmy_", StringComparison.Ordinal);
+        }
+
+        static System.Collections.Generic.IEnumerable<MonkeyArmyFollower> GetSwanTacticalUnitFollowers()
+        {
+            foreach (var spawnedObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
+            {
+                if (spawnedObject &&
+                    spawnedObject.name.StartsWith("SwanTactical_", StringComparison.Ordinal) &&
+                    spawnedObject.TryGetComponent(out MonkeyArmyFollower follower))
+                {
+                    yield return follower;
+                }
+            }
         }
 
         void UpdateAction1()
