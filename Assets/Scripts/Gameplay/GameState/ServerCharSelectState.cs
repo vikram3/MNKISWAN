@@ -62,6 +62,9 @@ namespace Unity.BossRoom.Gameplay.GameState
                 return;
             }
 
+            newSeatIdx = GetAllowedSeatIdx(networkCharSelection.sessionPlayers[idx].PlayerNumber, newSeatIdx,
+                networkCharSelection.AvatarConfiguration.Length);
+
             if (newSeatIdx == -1)
             {
                 // we can't lock in with no seat
@@ -113,6 +116,26 @@ namespace Unity.BossRoom.Gameplay.GameState
             }
 
             CloseSessionIfReady();
+        }
+
+        int GetAllowedSeatIdx(int playerNumber, int requestedSeatIdx, int seatCount)
+        {
+            if (playerNumber == 0)
+            {
+                return 0;
+            }
+
+            if (requestedSeatIdx == -1)
+            {
+                return requestedSeatIdx;
+            }
+
+            if (requestedSeatIdx == 0)
+            {
+                return Math.Min(playerNumber, seatCount - 1);
+            }
+
+            return requestedSeatIdx;
         }
 
         /// <summary>
