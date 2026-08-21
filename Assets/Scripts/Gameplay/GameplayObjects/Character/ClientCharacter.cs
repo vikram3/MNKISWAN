@@ -154,7 +154,11 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 {
                     ActionRequestData data = new ActionRequestData { ActionID = GameDataSource.Instance.GeneralTargetActionPrototype.ActionID };
                     m_ClientActionViz.PlayAction(ref data);
-                    gameObject.AddComponent<CameraController>();
+                    var cameraController = gameObject.AddComponent<CameraController>();
+                    if (m_ServerCharacter.CharacterClass.UseAerialMovement)
+                    {
+                        cameraController.UseAerialView();
+                    }
 
                     if (m_ServerCharacter.TryGetComponent(out ClientInputSender inputSender))
                     {
