@@ -125,6 +125,11 @@ namespace Unity.BossRoom.Gameplay.GameState
                 return 0;
             }
 
+            if (playerNumber == 1)
+            {
+                return Math.Min(1, seatCount - 1);
+            }
+
             if (requestedSeatIdx == -1)
             {
                 return requestedSeatIdx;
