@@ -11,6 +11,7 @@ using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -40,7 +41,13 @@ namespace Unity.BossRoom.Gameplay.GameState
         [Tooltip("A collection of locations for spawning players")]
         private Transform[] m_PlayerSpawnPoints;
 
+        [SerializeField]
+        [Tooltip("Server-owned Monkey follower army units spawned after the players enter Boss Room.")]
+        private NetworkObject[] m_MonkeyFollowerPrefabs;
+
         private List<Transform> m_PlayerSpawnPointsList = null;
+
+        bool m_MonkeyFollowersSpawned;
 
         public override GameState ActiveState { get { return GameState.BossRoom; } }
 
@@ -135,6 +142,8 @@ namespace Unity.BossRoom.Gameplay.GameState
                 {
                     SpawnPlayer(kvp.Key, false);
                 }
+
+                SpawnMonkeyFollowers();
             }
         }
 
@@ -218,6 +227,51 @@ namespace Unity.BossRoom.Gameplay.GameState
 
             // spawn players characters with destroyWithScene = true
             newPlayer.SpawnWithOwnership(clientId, true);
+        }
+
+        void SpawnMonkeyFollowers()
+        {
+            if (m_MonkeyFollowersSpawned || m_MonkeyFollowerPrefabs == null || m_MonkeyFollowerPrefabs.Length == 0)
+            {
+                return;
+            }
+
+            ServerCharacter monkey = null;
+            foreach (var player in PlayerServerCharacter.GetPlayerServerCharacters())
+            {
+                if (player && player.CharacterClass.IsMissionHealth)
+                {
+                    monkey = player;
+                    break;
+                }
+            }
+
+            if (!monkey)
+            {
+                return;
+            }
+
+            m_MonkeyFollowersSpawned = true;
+            var monkeyTransform = monkey.physicsWrapper.Transform;
+
+            for (int i = 0; i < m_MonkeyFollowerPrefabs.Length; i++)
+            {
+                var prefab = m_MonkeyFollowerPrefabs[i];
+                if (!prefab)
+                {
+                    continue;
+                }
+
+                var offset = prefab.TryGetComponent(out MonkeyArmyFollower follower) ? follower.FollowOffset : Vector3.zero;
+                var spawnPosition = monkeyTransform.position + (monkeyTransform.rotation * offset);
+                if (NavMesh.SamplePosition(spawnPosition, out var navMeshHit, 2f, NavMesh.AllAreas))
+                {
+                    spawnPosition = navMeshHit.position;
+                }
+
+                var followerObject = Instantiate(prefab, spawnPosition, monkeyTransform.rotation);
+                followerObject.Spawn(true);
+            }
         }
 
         void OnLifeStateChangedEventMessage(LifeStateChangedEventMessage message)
