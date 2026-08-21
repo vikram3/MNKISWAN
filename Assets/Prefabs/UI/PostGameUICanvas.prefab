@@ -402,7 +402,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YOU WON!
+  m_text: KINGDOM RECLAIMED!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1a8c97d4cbe5134499b26527f8609c7e, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 5b1f83d1cb4ab5e4b8fddf485d1e19c4, type: 2}
