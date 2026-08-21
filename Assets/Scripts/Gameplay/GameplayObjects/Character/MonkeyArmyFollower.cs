@@ -60,6 +60,17 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             m_NextUpdateTime = 0;
         }
 
+        public void HoldPosition()
+        {
+            if (!IsServer)
+            {
+                return;
+            }
+
+            m_IsFollowing = false;
+            m_ServerCharacter.Movement.CancelMove();
+        }
+
         void Update()
         {
             if (!m_IsFollowing ||

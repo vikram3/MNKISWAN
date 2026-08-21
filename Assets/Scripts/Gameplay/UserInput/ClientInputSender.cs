@@ -630,6 +630,13 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     ServerSwanSelectedUnitFollowRpc(SelectedSwanArmyUnitId);
                 }
 
+                if (Keyboard.current != null &&
+                    Keyboard.current.hKey.wasPressedThisFrame &&
+                    SelectedSwanArmyUnitId != 0)
+                {
+                    ServerSwanSelectedUnitHoldPositionRpc(SelectedSwanArmyUnitId);
+                }
+
                 if (m_Skill1Action.action.WasPressedThisFrame())
                 {
                     RequestAction(CharacterClass.Skill1.ActionID, SkillTriggerStyle.MouseClick);
@@ -683,6 +690,20 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.FollowMonkeyKing();
+        }
+
+        [Rpc(SendTo.Server)]
+        void ServerSwanSelectedUnitHoldPositionRpc(ulong selectedUnitId)
+        {
+            if (m_ServerCharacter.CharacterClass.DisplayedName != "SWAN PRINCESS" ||
+                !NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(selectedUnitId, out var selectedUnit) ||
+                !selectedUnit.name.StartsWith("SwanTactical_", StringComparison.Ordinal) ||
+                !selectedUnit.TryGetComponent(out MonkeyArmyFollower follower))
+            {
+                return;
+            }
+
+            follower.HoldPosition();
         }
 
         void UpdateAction1()
