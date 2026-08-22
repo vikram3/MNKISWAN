@@ -640,6 +640,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     Keyboard.current.fKey.wasPressedThisFrame &&
                     HasSwanArmyCommandSelection())
                 {
+                    CurrentSwanArmyCommand = "FOLLOW";
                     if (IsSwanArmyGroupSelected)
                     {
                         ServerSwanArmyGroupFollowRpc();
@@ -654,6 +655,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     Keyboard.current.hKey.wasPressedThisFrame &&
                     HasSwanArmyCommandSelection())
                 {
+                    CurrentSwanArmyCommand = "HOLD POSITION";
                     if (IsSwanArmyGroupSelected)
                     {
                         ServerSwanArmyGroupHoldPositionRpc();
@@ -669,6 +671,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     HasSwanArmyCommandSelection() &&
                     m_ServerCharacter.TargetId.Value != 0)
                 {
+                    CurrentSwanArmyCommand = "ATTACK";
                     if (IsSwanArmyGroupSelected)
                     {
                         ServerSwanArmyGroupAttackRpc(m_ServerCharacter.TargetId.Value);
@@ -683,6 +686,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                     Keyboard.current.pKey.wasPressedThisFrame &&
                     HasSwanArmyCommandSelection())
                 {
+                    CurrentSwanArmyCommand = "PROTECT KING";
                     if (IsSwanArmyGroupSelected)
                     {
                         ServerSwanArmyGroupProtectKingRpc();
