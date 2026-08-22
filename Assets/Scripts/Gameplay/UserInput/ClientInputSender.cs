@@ -148,6 +148,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
 
         public bool IsSwanArmyGroupSelected { get; private set; }
 
+        public string CurrentSwanArmyCommand { get; private set; } = "None";
+
         void Awake()
         {
             m_MainCamera = Camera.main;
@@ -749,6 +751,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.FollowMonkeyKing();
+            CurrentSwanArmyCommand = "FOLLOW";
         }
 
         [Rpc(SendTo.Server)]
@@ -763,6 +766,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.HoldPosition();
+            CurrentSwanArmyCommand = "HOLD POSITION";
         }
 
         [Rpc(SendTo.Server)]
@@ -783,6 +787,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.AttackTarget(targetId);
+            CurrentSwanArmyCommand = "ATTACK";
         }
 
         [Rpc(SendTo.Server)]
@@ -797,6 +802,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             }
 
             follower.ProtectMonkeyKing();
+            CurrentSwanArmyCommand = "PROTECT KING";
         }
 
         [Rpc(SendTo.Server)]
@@ -811,6 +817,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
             {
                 follower.FollowMonkeyKing();
             }
+
+            CurrentSwanArmyCommand = "FOLLOW";
         }
 
         [Rpc(SendTo.Server)]
@@ -825,6 +833,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
             {
                 follower.HoldPosition();
             }
+
+            CurrentSwanArmyCommand = "HOLD POSITION";
         }
 
         [Rpc(SendTo.Server)]
@@ -839,6 +849,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
             {
                 follower.AttackTarget(targetId);
             }
+
+            CurrentSwanArmyCommand = "ATTACK";
         }
 
         [Rpc(SendTo.Server)]
@@ -853,6 +865,8 @@ namespace Unity.BossRoom.Gameplay.UserInput
             {
                 follower.ProtectMonkeyKing();
             }
+
+            CurrentSwanArmyCommand = "PROTECT KING";
         }
 
         bool IsValidSwanArmyAttackTarget(ulong targetId)
