@@ -1277,6 +1277,7 @@ GameObject:
   - component: {fileID: 5277713031684110769}
   - component: {fileID: 5277713031684110768}
   - component: {fileID: 6125842865783551428}
+  - component: {fileID: 918437982654120731}
   m_Layer: 5
   m_Name: BossRoomHudCanvas
   m_TagString: GameCanvas
@@ -1384,6 +1385,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd6a784bc0a4fd4a8291b0ae5c53471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &918437982654120731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5277713031684110771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c25f136edf154551aac496030d47e25d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MonkeyAttackFX: {fileID: 5484667644151651130, guid: e1a27cb18e3a1d649aa3fc6420f3731b, type: 3}
+  m_SwanSupportFX: {fileID: 7035126552850139012, guid: 8b58298c2bb9f0d4f8cb8243450adeda, type: 3}
+  m_ArmyCommandFX: {fileID: 5082887311174748168, guid: 644c238552d6e06418fd67fc4f27f5e8, type: 3}
+  m_SelectedArmyUnitFX: {fileID: 7346377964058583683, guid: 13d7fd9a848b9be4fb0fa6e3bed1471c, type: 3}
+  m_EnemyPriorityTargetFX: {fileID: 3697322597467218969, guid: 546d1949af792c245b0861507d25a349, type: 3}
+  m_MonkeyCriticalHealthFX: {fileID: 4740533212200561873, guid: 1870283b1e6ea9749b763552dcb62fbc, type: 3}
+  m_CommanderDefeatFX: {fileID: 2551370509165089886, guid: 260ac2f5765fdfb4bb4fe3d466851e01, type: 3}
 --- !u!1 &5581765872509315008
 GameObject:
   m_ObjectHideFlags: 0
