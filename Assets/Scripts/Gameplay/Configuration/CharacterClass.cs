@@ -42,6 +42,9 @@ namespace Unity.BossRoom.Gameplay.Configuration
         [Tooltip("Highest world-space height this character can fly at.")]
         public float MaxAerialHeight;
 
+        [Tooltip("For flying characters, the height they spawn/cruise at by default so they start airborne instead of on the ground.")]
+        public float DefaultAerialHeight;
+
         [Tooltip("If true, this character's defeat causes the mission to fail.")]
         public bool IsMissionHealth;
 

@@ -78,6 +78,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                     m_NavigationSystem = GameObject.FindGameObjectWithTag(NavigationSystem.NavigationSystemTag).GetComponent<NavigationSystem>();
                     m_NavPath = new DynamicNavPath(m_NavMeshAgent, m_NavigationSystem);
                 }
+                else
+                {
+                    // Aerial characters should start airborne, not sitting on the ground waiting
+                    // for the player to discover the ascend key.
+                    var spawnPosition = transform.position;
+                    spawnPosition.y = m_CharLogic.CharacterClass.DefaultAerialHeight;
+                    Teleport(ClampAerialPosition(spawnPosition));
+                    m_AerialTargetPosition = transform.position;
+                }
             }
         }
 

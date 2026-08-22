@@ -22,6 +22,7 @@ MonoBehaviour:
   UseAerialMovement: 1
   MinAerialHeight: 0
   MaxAerialHeight: 8
+  DefaultAerialHeight: 4
   IsNpc: 0
   DetectRange: 0
   DisplayedName: SWAN PRINCESS
