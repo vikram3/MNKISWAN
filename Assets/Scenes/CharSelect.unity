@@ -798,30 +798,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1313797104}
     - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
-      propertyPath: 'm_PlayerSeats.Array.data[2]'
-      value: 
-      objectReference: {fileID: 642722561}
-    - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
-      propertyPath: 'm_PlayerSeats.Array.data[3]'
-      value: 
-      objectReference: {fileID: 1396410021}
-    - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
-      propertyPath: 'm_PlayerSeats.Array.data[4]'
-      value: 
-      objectReference: {fileID: 536920505}
-    - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
-      propertyPath: 'm_PlayerSeats.Array.data[5]'
-      value: 
-      objectReference: {fileID: 853305158}
-    - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
-      propertyPath: 'm_PlayerSeats.Array.data[6]'
-      value: 
-      objectReference: {fileID: 980982887}
-    - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
-      propertyPath: 'm_PlayerSeats.Array.data[7]'
-      value: 
-      objectReference: {fileID: 1334998397}
-    - target: {fileID: 3565665953789623674, guid: 1a58a2c4657fe6d4890d9ad39f43894e, type: 3}
       propertyPath: autoInjectGameObjects.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -1322,6 +1298,66 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5940892341882885327, guid: 463d19e34c787654c8cb7332fc58149b, type: 3}
   m_PrefabInstance: {fileID: 5940892340892531729}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &811000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 811000002}
+  - component: {fileID: 811000003}
+  m_Layer: 0
+  m_Name: Kingdom Army Preview
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &811000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &811000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f568ab123a44b4fb59db6ce620a7da1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LeftArmyGraphics:
+  - {fileID: 2291389544636889857, guid: 518b9128d043e344ba314210b4dcef75, type: 3}
+  - {fileID: 6394439823337557057, guid: c2d4ed9d4c78ec64d9e2a885efb35de3, type: 3}
+  - {fileID: 4177120040628001574, guid: 7bede58fa343cbf49a1752ba7afd8bb1, type: 3}
+  - {fileID: 878901532367110463, guid: 30b2e61172343c74e82b1ddb9e5360f8, type: 3}
+  m_RightArmyGraphics:
+  - {fileID: 2610400121077600659, guid: 9e2d5c7ee42608f4db48a6a238b3f0ae, type: 3}
+  - {fileID: 1879568667037027320, guid: 86a624c82c6c71c4e8a406ed484fbb63, type: 3}
+  - {fileID: 6020211377990014347, guid: 33da3b4c3bf91eb41a4cc9a3f9c907dc, type: 3}
+  - {fileID: 7799824671938135115, guid: ea746edd3c8d4824cbef11ed2d5a16cb, type: 3}
+  m_LeftOrigin: {x: -5.4, y: -1.85, z: -41.25}
+  m_RightOrigin: {x: 5.4, y: -1.85, z: -41.25}
+  m_Spacing: {x: 1.15, y: 0, z: 0}
+  m_LeftRotationEuler: {x: 0, y: 160, z: 0}
+  m_RightRotationEuler: {x: 0, y: 200, z: 0}
+  m_Scale: 0.65
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1336,3 +1372,4 @@ SceneRoots:
   - {fileID: 2083157575}
   - {fileID: 306563561}
   - {fileID: 596224818}
+  - {fileID: 811000002}

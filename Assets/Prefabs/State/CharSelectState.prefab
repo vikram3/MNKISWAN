@@ -95,12 +95,6 @@ MonoBehaviour:
   m_PlayerSeats:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_IdentifiersForEachPlayerNumber:
   - Indicator: {fileID: 21300000, guid: 4efd4bc875cf78440a2bba2df426df59, type: 3}
     Color: {r: 1, g: 0.9607843, b: 0.03529412, a: 1}
@@ -147,12 +141,6 @@ MonoBehaviour:
   AvatarConfiguration:
   - {fileID: 11400000, guid: b79187b04abb4bb193ff4e529d043491, type: 2}
   - {fileID: 11400000, guid: c973379b0beb4ac399f69e2132d78e7b, type: 2}
-  - {fileID: 11400000, guid: f3963f718ed4cea40b8f6e9e4a3dd80e, type: 2}
-  - {fileID: 11400000, guid: da340c65b28e6904a8e89b5a20674ecd, type: 2}
-  - {fileID: 11400000, guid: 237e099f90346e941af744f402a5bdd6, type: 2}
-  - {fileID: 11400000, guid: f49fc0646d4e9554f88a31ac496afd19, type: 2}
-  - {fileID: 11400000, guid: 70d299733c76b0649852336624091fca, type: 2}
-  - {fileID: 11400000, guid: 9cc69a593b6ff1b4b95bf7330ec5ab46, type: 2}
 --- !u!114 &8494646029522094751
 MonoBehaviour:
   m_ObjectHideFlags: 0

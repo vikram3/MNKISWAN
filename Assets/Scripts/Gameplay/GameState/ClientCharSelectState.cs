@@ -43,7 +43,7 @@ namespace Unity.BossRoom.Gameplay.GameState
 
         [Header("Session Seats")]
         [SerializeField]
-        [Tooltip("Collection of 8 portrait-boxes, one for each potential session member")]
+        [Tooltip("Collection of portrait-boxes for the selectable prototype heroes")]
         List<UICharSelectPlayerSeat> m_PlayerSeats;
 
         [System.Serializable]
@@ -147,6 +147,8 @@ namespace Unity.BossRoom.Gameplay.GameState
         protected override void Start()
         {
             base.Start();
+            DisableUnlistedPlayerSeats();
+
             for (int i = 0; i < m_PlayerSeats.Count; ++i)
             {
                 m_PlayerSeats[i].Initialize(i);
@@ -154,6 +156,18 @@ namespace Unity.BossRoom.Gameplay.GameState
 
             ConfigureUIForSessionMode(SessionMode.ChooseSeat);
             UpdateCharacterSelection(NetworkCharSelection.SeatState.Inactive);
+        }
+
+        void DisableUnlistedPlayerSeats()
+        {
+            var allSeats = FindObjectsByType<UICharSelectPlayerSeat>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var seat in allSeats)
+            {
+                if (seat && !m_PlayerSeats.Contains(seat))
+                {
+                    seat.gameObject.SetActive(false);
+                }
+            }
         }
 
         void OnNetworkDespawn()
