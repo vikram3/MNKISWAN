@@ -89,10 +89,25 @@ namespace Unity.BossRoom.Gameplay.GameState
         [SerializeField]
         Transform m_CharacterGraphicsParent;
 
+        [SerializeField]
+        [Tooltip("Second preview slot, used when Monkey King or Swan Princess is selected so they can be shown standing together")]
+        Transform m_SecondCharacterGraphicsParent;
+
+        [SerializeField]
+        [Tooltip("Reference to the Monkey King Avatar asset (Assets/GameData/Avatars/MonkeyKing.asset)")]
+        Avatar m_MonkeyKingAvatar;
+
+        [SerializeField]
+        [Tooltip("Reference to the Swan Princess Avatar asset (Assets/GameData/Avatars/SwanPrincess.asset)")]
+        Avatar m_SwanPrincessAvatar;
+
         int m_LastSeatSelected = -1;
         bool m_HasLocalPlayerLockedIn = false;
 
         GameObject m_CurrentCharacterGraphics;
+
+        // holds the "partner" model (Monkey King or Swan Princess) shown alongside the selected one
+        GameObject m_CurrentPartnerGraphics;
 
         Animator m_CurrentCharacterGraphicsAnimator;
 
@@ -267,6 +282,12 @@ namespace Unity.BossRoom.Gameplay.GameState
                     m_CurrentCharacterGraphics.SetActive(false);
                 }
 
+                if (m_CurrentPartnerGraphics)
+                {
+                    m_CurrentPartnerGraphics.SetActive(false);
+                    m_CurrentPartnerGraphics = null;
+                }
+
                 m_ClassInfoBox.ConfigureForNoSelection();
             }
             else
@@ -276,18 +297,38 @@ namespace Unity.BossRoom.Gameplay.GameState
                     // change character preview when selecting a new seat
                     if (isNewSeat)
                     {
-                        var selectedCharacterGraphics = GetCharacterGraphics(m_NetworkCharSelection.AvatarConfiguration[seatIdx]);
+                        var selectedAvatar = m_NetworkCharSelection.AvatarConfiguration[seatIdx];
 
                         if (m_CurrentCharacterGraphics)
                         {
                             m_CurrentCharacterGraphics.SetActive(false);
                         }
 
+                        if (m_CurrentPartnerGraphics)
+                        {
+                            m_CurrentPartnerGraphics.SetActive(false);
+                            m_CurrentPartnerGraphics = null;
+                        }
+
+                        var selectedCharacterGraphics = GetCharacterGraphics(selectedAvatar, m_CharacterGraphicsParent);
                         selectedCharacterGraphics.SetActive(true);
                         m_CurrentCharacterGraphics = selectedCharacterGraphics;
                         m_CurrentCharacterGraphicsAnimator = m_CurrentCharacterGraphics.GetComponent<Animator>();
 
-                        m_ClassInfoBox.ConfigureForClass(m_NetworkCharSelection.AvatarConfiguration[seatIdx].CharacterClass);
+                        // Monkey King and Swan Princess are shown together on the main screen when either is selected
+                        bool isMonkeyOrSwan = selectedAvatar == m_MonkeyKingAvatar || selectedAvatar == m_SwanPrincessAvatar;
+                        if (isMonkeyOrSwan && m_SecondCharacterGraphicsParent)
+                        {
+                            var partnerAvatar = selectedAvatar == m_MonkeyKingAvatar ? m_SwanPrincessAvatar : m_MonkeyKingAvatar;
+                            if (partnerAvatar)
+                            {
+                                var partnerGraphics = GetCharacterGraphics(partnerAvatar, m_SecondCharacterGraphicsParent);
+                                partnerGraphics.SetActive(true);
+                                m_CurrentPartnerGraphics = partnerGraphics;
+                            }
+                        }
+
+                        m_ClassInfoBox.ConfigureForClass(selectedAvatar.CharacterClass);
                     }
                 }
 
@@ -453,12 +494,17 @@ namespace Unity.BossRoom.Gameplay.GameState
             }
         }
 
-        GameObject GetCharacterGraphics(Avatar avatar)
+        GameObject GetCharacterGraphics(Avatar avatar, Transform parent)
         {
             if (!m_SpawnedCharacterGraphics.TryGetValue(avatar.Guid, out GameObject characterGraphics))
             {
-                characterGraphics = Instantiate(avatar.GraphicsCharacterSelect, m_CharacterGraphicsParent);
+                characterGraphics = Instantiate(avatar.GraphicsCharacterSelect, parent);
                 m_SpawnedCharacterGraphics.Add(avatar.Guid, characterGraphics);
+            }
+            else if (characterGraphics.transform.parent != parent)
+            {
+                // this avatar's graphics were previously spawned into a different preview slot; move it over
+                characterGraphics.transform.SetParent(parent, false);
             }
 
             return characterGraphics;
