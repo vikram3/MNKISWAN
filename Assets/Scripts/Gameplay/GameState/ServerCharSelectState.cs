@@ -120,27 +120,15 @@ namespace Unity.BossRoom.Gameplay.GameState
 
         int GetAllowedSeatIdx(int playerNumber, int requestedSeatIdx, int seatCount)
         {
-            if (playerNumber == 0)
-            {
-                return 0;
-            }
-
-            if (playerNumber == 1)
-            {
-                return Math.Min(1, seatCount - 1);
-            }
-
+            // No forced/fixed seat for any player number anymore -- everyone (host included)
+            // is free to pick whichever open seat they click. We just make sure the
+            // requested index is valid; "unseat" (-1) passes straight through.
             if (requestedSeatIdx == -1)
             {
                 return requestedSeatIdx;
             }
 
-            if (requestedSeatIdx == 0)
-            {
-                return Math.Min(playerNumber, seatCount - 1);
-            }
-
-            return requestedSeatIdx;
+            return Math.Clamp(requestedSeatIdx, 0, seatCount - 1);
         }
 
         /// <summary>
